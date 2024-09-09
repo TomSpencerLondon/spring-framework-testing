@@ -2,7 +2,9 @@ package rewards.internal.account;
 
 import common.money.MonetaryAmount;
 import common.money.Percentage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -10,26 +12,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * Loads accounts from a data source using the JDBC API.
- */
 
-/* TODO-05: Let this class to be found in component-scanning
- * - Annotate the class with an appropriate stereotype annotation
- *   to cause component-scan to detect and load this bean.
- * - Inject dataSource by annotating setDataSource() method
- *   with @Autowired.
- */
 
+@Repository
 public class JdbcAccountRepository implements AccountRepository {
 
 	private DataSource dataSource;
 
-	/**
-	 * Sets the data source this repository will use to load accounts.
-	 *
-	 * @param dataSource the data source
-	 */
+	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
