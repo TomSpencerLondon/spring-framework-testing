@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import rewards.internal.exception.RewardDataAccessException;
 
 
-@Aspect	
+@Aspect
 @Component
 public class DBExceptionHandlingAspect {
 	
