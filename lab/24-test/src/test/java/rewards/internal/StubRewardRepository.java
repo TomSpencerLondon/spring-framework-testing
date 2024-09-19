@@ -16,7 +16,7 @@ import rewards.internal.reward.RewardRepository;
  * A dummy reward repository implementation.
  */
 @Profile("stub")
-@Repository("rewardRepository")
+@Repository
 public class StubRewardRepository implements RewardRepository {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());

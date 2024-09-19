@@ -25,7 +25,7 @@ import common.money.Percentage;
  * behavior by considering the state of this stub.
  */
 @Profile("stub")
-@Repository("accountRepository")
+@Repository
 public class StubAccountRepository implements AccountRepository {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());

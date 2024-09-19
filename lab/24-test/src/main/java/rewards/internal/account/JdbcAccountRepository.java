@@ -21,7 +21,7 @@ import common.money.Percentage;
  * Loads accounts from a data source using the JDBC API.
  */
 @Profile("jdbc")
-@Repository("accountRepository")
+@Repository
 public class JdbcAccountRepository implements AccountRepository {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());

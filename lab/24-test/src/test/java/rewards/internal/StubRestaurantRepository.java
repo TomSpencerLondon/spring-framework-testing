@@ -15,7 +15,7 @@ import rewards.internal.restaurant.RestaurantRepository;
 import common.money.Percentage;
 
 @Profile("stub")
-@Repository("restaurantRepository")
+@Repository
 public class StubRestaurantRepository implements RestaurantRepository {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
