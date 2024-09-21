@@ -71,7 +71,6 @@ public class JdbcRewardRepositoryTests {
 	}
 
 	private int getRewardCount() throws SQLException {
-		// TODO-01: Use JdbcTemplate to query for the number of rows in the T_REWARD table
 		String query = "SELECT count(*) FROM T_REWARD";
 		return jdbcTemplate.queryForObject(query, Integer.class);
 	}
