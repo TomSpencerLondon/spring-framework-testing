@@ -2,9 +2,3 @@ dependencies {
     implementation project(':00-rewards-common')
 }
 
-test {
-    exclude '**/RewardNetworkTests.class'
-    exclude '**/RewardNetworkPropagationTests.class'
-    exclude '**/RewardNetworkSideEffectTests.class'
-}
-
