@@ -34,9 +34,6 @@ public class RewardNetworkImpl implements RewardNetwork {
 		this.rewardRepository = rewardRepository;
 	}
 
-	// TODO-06: Modify the transactional attributes of the rewardAccountFor() method below.
-	// Switch the propagation level to require a NEW transaction whenever invoked.  
-
 	@Transactional
 	public RewardConfirmation rewardAccountFor(Dining dining) {
 		Account account = accountRepository.findByCreditCard(dining.getCreditCardNumber());

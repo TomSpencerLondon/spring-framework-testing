@@ -11,19 +11,14 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * A system test that demonstrates how propagation settings affect transactional
- * execution.
- */
-
-// TODO-07: Re-run this test, it should now pass.
-// - Think about why this test passes now.
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { SystemTestConfig.class })
+@Transactional
 public class RewardNetworkPropagationTests {
 
 	/**
