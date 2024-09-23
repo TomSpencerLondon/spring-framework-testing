@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import rewards.internal.account.Account;
 import rewards.internal.account.Beneficiary;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,45 +35,19 @@ public class AccountController {
 		this.accountManager = accountManager;
 	}
 
-	/**
-	 * Provide a list of all accounts.
-	 */
-	// TODO-02: Review the code that performs the following
-	// a. Respond to GET /accounts
-    // b. Return a List<Account> to be converted to the response body
-	// - Access http://localhost:8080/accounts using a browser or curl
-	//   and verify that you see the list of accounts in JSON format.
 	@GetMapping(value = "/accounts")
 	public List<Account> accountSummary() {
 		return accountManager.getAllAccounts();
 	}
 
-	/**
-	 * Provide the details of an account with the given id.
-	 */
-	// TODO-04: Review the code that performs the following
-	// a. Respond to GET /accounts/{accountId}
-    // b. Return an Account to be converted to the response body
-	// - Access http://localhost:8080/accounts/0 using a browser or curl
-	//   and verify that you see the account detail in JSON format
 	@GetMapping(value = "/accounts/{id}")
 	public Account accountDetails(@PathVariable int id) {
 		return retrieveAccount(id);
 	}
 
-	/**
-	 * Creates a new Account, setting its URL as the Location header on the
-	 * response.
-	 */
-	// TODO-06: Complete this method. Add annotations to:
-	// a. Respond to POST /accounts requests
-    // b. Use a proper annotation for creating an Account object from the request
-	public ResponseEntity<Void> createAccount(Account newAccount) {
-		// Saving the account also sets its entity Id
+	@PostMapping(value = "/accounts")
+	public ResponseEntity<Void> createAccount(@RequestBody Account newAccount) {
 		Account account = accountManager.save(newAccount);
-
-		// Return a ResponseEntity - it will be used to build the
-		// HttpServletResponse.
 		return entityWithLocation(account.getEntityId());
 	}
 
@@ -84,14 +60,13 @@ public class AccountController {
 	 *   http://localhost:8080/accounts/1111.
 	 */
 	private ResponseEntity<Void> entityWithLocation(Object resourceId) {
+		URI location = ServletUriComponentsBuilder
+				.fromCurrentRequestUri()
+				.path("/{resourceId}")
+				.buildAndExpand(resourceId)
+				.toUri();
 
-		// TODO-07: Set the 'location' header on a Response to URI of
-		//          the newly created resource and return it.
-		// a. You will need to use 'ServletUriComponentsBuilder' and
-		//     'ResponseEntity' to implement this - Use ResponseEntity.created(..)
-		// b. Refer to the POST example in the slides for more information
-
-		return null; // Return something other than null
+		return ResponseEntity.created(location).build();
 	}
 
 	/**
@@ -104,48 +79,37 @@ public class AccountController {
 		return retrieveAccount(accountId).getBeneficiary(beneficiaryName);
 	}
 
-	/**
-	 * Adds a Beneficiary with the given name to the Account with the given id,
-	 * setting its URL as the Location header on the response.
-	 */
-	// TODO-10: Complete this method. Add annotations to:
-	// a. Respond to a POST /accounts/{accountId}/beneficiaries
-	// b. Extract a beneficiary name from the incoming request
-	// c. Indicate a "201 Created" status
-	public ResponseEntity<Void> addBeneficiary(long accountId, String beneficiaryName) {
-		
-		// TODO-11: Create a ResponseEntity containing the location of the newly
-		// created beneficiary.
-		// a. Use accountManager's addBeneficiary method to add a beneficiary to an account
-		// b. Use the entityWithLocation method - like we did for createAccount().
-		
-		return null;  // Modify this to return something
+	@PostMapping(value = "/accounts/{accountId}/beneficiaries")
+	public ResponseEntity<Void> addBeneficiary(@PathVariable long accountId, @RequestBody String beneficiaryName) {
+		accountManager.addBeneficiary(accountId, beneficiaryName);
+		return entityWithLocation(beneficiaryName);
 	}
 
-	/**
-	 * Removes the Beneficiary with the given name from the Account with the
-	 * given id.
-	 */
-	// TODO-12: Complete this method by adding the appropriate annotations to:
-	// a. Respond to a DELETE to /accounts/{accountId}/beneficiaries/{beneficiaryName}
-	// b. Indicate a "204 No Content" status
-	public void removeBeneficiary(long accountId, String beneficiaryName) {
+	@DeleteMapping(value = "/accounts/{accountId}/beneficiaries/{beneficiaryName}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void removeBeneficiary(@PathVariable long accountId, @PathVariable String beneficiaryName) {
 		Account account = accountManager.getAccount(accountId);
 		if (account == null) {
 			throw new IllegalArgumentException("No such account with id " + accountId);
 		}
-		Beneficiary b = account.getBeneficiary(beneficiaryName);
+		Beneficiary deletedBeneficiary = account.getBeneficiary(beneficiaryName);
+		HashMap<String, Percentage> allocationPercentages = new HashMap<>();
 
-		// We ought to reset the allocation percentages, but for now we won't
-		// bother. If we are removing the only beneficiary or the beneficiary
-		// has an allocation of zero we don't need to worry. Otherwise, throw an
-		// exception.
-		if (account.getBeneficiaries().size() != 1 && (!b.getAllocationPercentage().equals(Percentage.zero()))) {
-			// The solution has the missing logic, if you are interested.
-			throw new RuntimeException("Logic to rebalance Beneficiaries not defined.");
+
+		if (account.getBeneficiaries().size() != 1 && (!deletedBeneficiary.getAllocationPercentage().equals(Percentage.zero()))) {
+			Percentage p = deletedBeneficiary.getAllocationPercentage();
+			int remaining = account.getBeneficiaries().size() - 1;
+			double extra = p.asDouble() / remaining;
+
+			for (Beneficiary beneficiary : account.getBeneficiaries()) {
+				if (beneficiary != deletedBeneficiary) {
+					double newValue = beneficiary.getAllocationPercentage().asDouble() + extra;
+					allocationPercentages.put(beneficiary.getName(), new Percentage(newValue));
+				}
+			}
 		}
 
-		accountManager.removeBeneficiary(accountId, beneficiaryName, new HashMap<String, Percentage>());
+		accountManager.removeBeneficiary(accountId, beneficiaryName, allocationPercentages);
 	}
 
 	/**
