@@ -5,6 +5,7 @@ import common.money.Percentage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -122,10 +123,11 @@ public class AccountController {
 		// just return empty 404
 	}
 
-	// TODO-17 (Optional): Add a new exception-handling method
-	// - It should map DataIntegrityViolationException to a 409 Conflict status code.
-	// - Use the handleNotFound method above for guidance.
-	// - Consult the lab document for further instruction
+	@ResponseStatus(HttpStatus.CONFLICT)
+	@ExceptionHandler({DataIntegrityViolationException.class })
+	public void handleAlreadyExists(Exception ex) {
+		logger.error("Exception is: ", ex);
+	}
 	
 	/**
 	 * Finds the Account with the given id, throwing an IllegalArgumentException
