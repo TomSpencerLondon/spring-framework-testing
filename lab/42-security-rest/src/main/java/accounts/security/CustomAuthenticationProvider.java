@@ -30,8 +30,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		return authentication.equals(UsernamePasswordAuthenticationToken.class);
 	}
 
-	// Use custom authentication system for the verification of the
-	// passed username and password. (Here we are just faking it.)
 	private boolean checkCustomAuthenticationSystem(String username, String password) {
 		return username.equals("spring") && password.equals("spring");
 	}

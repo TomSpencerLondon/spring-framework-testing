@@ -2,6 +2,7 @@ package config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import accounts.security.CustomAuthenticationProvider;
 import accounts.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class RestSecurityConfig {
 				.requestMatchers(HttpMethod.GET, "/authorities").hasAnyRole("USER", "ADMIN", "SUPERADMIN")
                 .anyRequest().denyAll())
 				.userDetailsService(userDetailsService(passwordEncoder()))
+				.authenticationProvider(new CustomAuthenticationProvider())
         	.httpBasic(withDefaults())
         	.csrf(CsrfConfigurer::disable);
 
