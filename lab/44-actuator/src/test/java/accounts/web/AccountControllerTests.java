@@ -33,11 +33,7 @@ public class AccountControllerTests {
 		registry = mock(MeterRegistry.class);
 		counter = mock(Counter.class);
 		doReturn(counter).when(registry).counter(any(String.class), any(String.class), any(String.class));
-
-		// TODO-10: Fix compiler error
-		// - This constructor needs to pass MeterRegistry object as well
-		// - Run the tests (except the @Disabled ones) in this test class, they should pass
-		controller = new AccountController(new StubAccountManager());
+		controller = new AccountController(new StubAccountManager(), registry);
 	}
 
 	@Test
