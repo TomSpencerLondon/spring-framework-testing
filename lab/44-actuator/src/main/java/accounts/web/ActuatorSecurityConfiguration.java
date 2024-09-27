@@ -1,10 +1,5 @@
 package accounts.web;
 
-// TODO-21: Add Spring Boot security starter to the pom.xml or build.gradle
-// - You might want to refresh the IDE so that it picks up the change in the build file
-//
-// TODO-22: Uncomment code below until there is no compile error
-
 import org.springframework.boot.actuate.autoconfigure.condition.ConditionsReportEndpoint;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
