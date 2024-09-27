@@ -17,14 +17,6 @@ import config.AppConfig;
  * - Adding custom health indicator
  * - Configuring security against actuator endpoints
  * - Using AOP for counter operation (optional step)
- *
- * TODO-01: Note that the Actuator starter is already set up for you.
- *          (Look for TO-DO-01 in the pom.xml or build.gradle)
- *
- * TODO-02: Run this application. Try these URLs:
- * - http://localhost:8080/actuator - should work
- * - http://localhost:8080/actuator/metrics - fails (404), why?
- *
  * TODO-03: Expose some endpoints
  *          (Look for TO-DO-03 in application.properties)
  *

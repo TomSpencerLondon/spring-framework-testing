@@ -39,13 +39,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-         <!-- TO-DO-01: Note that the Actuator starter is already here for you. -->
           <dependency>
                <groupId>org.springframework.boot</groupId>
                <artifactId>spring-boot-starter-actuator</artifactId>
           </dependency>
 
-          <!-- Automatic application restart -->
           <dependency>
                <groupId>org.springframework.boot</groupId>
                <artifactId>spring-boot-devtools</artifactId>
